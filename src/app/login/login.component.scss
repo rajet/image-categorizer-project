@@ -4,8 +4,15 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  background-color: #333;
+  color: #fff;
   div {
     width: 400px;
+  }
+  .login-button:disabled {
+    background-color: #555;
+    color: #888;
+    cursor: not-allowed;
   }
   .dev-login-wrapper {
     margin-top: 10px;
