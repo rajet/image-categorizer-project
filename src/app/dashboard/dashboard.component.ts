@@ -7,6 +7,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent {
+  uploadedImageData: string | ArrayBuffer | null | undefined = null;
+
   constructor(
     private matSnackBar: MatSnackBar
   ) {}
@@ -46,6 +48,12 @@ export class DashboardComponent {
       // TODO: Handle the image file.
       // For now just log to console
       console.log('Uploaded image:', imageFile);
+      // and show on page to check that we have image data
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.uploadedImageData = e.target?.result;
+      };
+      reader.readAsDataURL(imageFile);
     }
   }
 }

@@ -1,5 +1,8 @@
 <div class="content">
+  <!-- title -->
   <h1>Welcome to the Image Categorizer</h1>
+
+  <!-- image upload area -->
   <label
     for="fileInput"
     class="image-upload-container"
@@ -17,4 +20,13 @@
       style="display: none"
     />
   </label>
+
+  <!-- Show last uploaded image here if available -->
+  <img
+    class="latest-image"
+    *ngIf="uploadedImageData"
+    [src]="uploadedImageData"
+    alt="Latest uploaded image"
+  />
+
 </div>

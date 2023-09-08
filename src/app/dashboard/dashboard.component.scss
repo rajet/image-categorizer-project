@@ -13,7 +13,9 @@
     padding: 20px;
     text-align: center;
     cursor: pointer;
-    transition: border-color 0.3s, background-color 0.3s;
+    transition:
+      border-color 0.3s,
+      background-color 0.3s;
     background-color: #444;
   }
 
@@ -25,5 +27,13 @@
   .upload-label {
     font-size: 16px;
     cursor: pointer;
+  }
+
+  .latest-image {
+    margin-top: 25px;
+    max-width: 500px;
+    max-height: 500px;
+    width: auto;
+    height: auto;
   }
 }
