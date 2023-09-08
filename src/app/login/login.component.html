@@ -1,22 +1,27 @@
-<form [formGroup]="loginForm" (ngSubmit)="login()">
-  <div>
-    <h1>Willkommen zum Image Categorizer!</h1>
+<div class="form-container">
+  <form [formGroup]="loginForm" (ngSubmit)="login()">
+    <div>
+      <h1>Willkommen zum Image Categorizer!</h1>
+    </div>
+    <div>
+      <mat-form-field class="width-100">
+        <mat-label>Email:</mat-label>
+        <input matInput formControlName="email" />
+      </mat-form-field>
+    </div>
+    <div>
+      <mat-form-field class="width-100">
+        <mat-label>Password:</mat-label>
+        <input matInput type="password" formControlName="password" />
+      </mat-form-field>
+    </div>
+    <div class="login-footer">
+      <button mat-raised-button color="primary" [disabled]="loginForm.invalid">
+        Anmelden
+      </button>
+    </div>
+  </form>
+  <div class="dev-login-wrapper">
+    <button mat-raised-button (click)="devLogin()">Dev Login</button>
   </div>
-  <div>
-    <mat-form-field class="width-100">
-      <mat-label>Email:</mat-label>
-      <input matInput formControlName="email" />
-    </mat-form-field>
-  </div>
-  <div>
-    <mat-form-field class="width-100">
-      <mat-label>Password:</mat-label>
-      <input matInput type="password" formControlName="password" />
-    </mat-form-field>
-  </div>
-  <div class="login-footer">
-    <button mat-raised-button color="primary" [disabled]="loginForm.invalid">
-      Anmelden
-    </button>
-  </div>
-</form>
+</div>

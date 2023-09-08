@@ -21,6 +21,7 @@ yarn-error.log
 *.launch
 .settings/
 *.sublime-workspace
+.github/
 
 # Visual Studio Code
 .vscode/*
@@ -44,4 +45,4 @@ testem.log
 Thumbs.db
 
 # Secrets
-src/environments/*
+src/environments/
