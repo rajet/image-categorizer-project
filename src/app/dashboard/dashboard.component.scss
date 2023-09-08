@@ -1,0 +1,29 @@
+.content {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background-color: #333;
+  color: #fff;
+
+  .image-upload-container {
+    border: 2px dashed #555;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.3s, background-color 0.3s;
+    background-color: #444;
+  }
+
+  .image-upload-container:hover {
+    border-color: #007bff;
+    background-color: #555;
+  }
+
+  .upload-label {
+    font-size: 16px;
+    cursor: pointer;
+  }
+}
