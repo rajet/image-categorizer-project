@@ -34,7 +34,7 @@ export class DashboardComponent {
     private storage: Storage,
     private firebaseFunctionsService: FirebaseFunctionsService,
   ) {
-    this.firebaseFunctionsService.analyzeImage();
+    // this.firebaseFunctionsService.analyzeImage();
   }
 
   onDragOver(event: Event): void {
