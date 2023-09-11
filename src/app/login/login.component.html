@@ -1,7 +1,7 @@
 <div class="form-container">
   <form [formGroup]="loginForm" (ngSubmit)="login()">
     <div>
-      <h1>Willkommen zum Image Categorizer!</h1>
+      <h1>Image Categorizer - Login</h1>
     </div>
     <div>
       <mat-form-field class="width-100">
@@ -16,8 +16,8 @@
       </mat-form-field>
     </div>
     <div class="login-footer">
-      <button mat-raised-button color="primary" [disabled]="loginForm.invalid">
-        Anmelden
+      <button class="login-button" mat-raised-button [disabled]="loginForm.invalid">
+        Login
       </button>
     </div>
   </form>
