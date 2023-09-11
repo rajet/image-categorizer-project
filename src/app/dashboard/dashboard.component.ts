@@ -34,7 +34,9 @@ export class DashboardComponent {
     private storage: Storage,
     private firebaseFunctionsService: FirebaseFunctionsService,
   ) {
-    // this.firebaseFunctionsService.analyzeImage();
+    this.firebaseFunctionsService
+      .analyzeImage()
+      .subscribe((str) => console.log('stri: ', str));
   }
 
   onDragOver(event: Event): void {
@@ -94,6 +96,7 @@ export class DashboardComponent {
       })
       .afterClosed()
       .pipe(
+        // switchMap(() => fireabasefunction)
         map((result) => result as ApprovalOutputData),
         map(
           (approvalOutput) =>
