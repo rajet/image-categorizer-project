@@ -6,10 +6,9 @@ import { from, map, switchMap } from 'rxjs';
 import { Category } from '../types/category.types';
 import { Firestore } from '@angular/fire/firestore';
 import { collection, addDoc } from '@firebase/firestore';
-
 import { Auth } from '@angular/fire/auth';
 import { ref, Storage, uploadBytes } from '@angular/fire/storage';
-import { FirebaseFunctionsService } from '../service/firebase-functions.service';
+// import { FirebaseFunctionsService } from '../service/firebase-functions.service';
 
 export interface ApprovalInputData {
   categoryDescription: string;
@@ -30,9 +29,9 @@ export class DashboardComponent {
     private matSnackBar: MatSnackBar,
     private matDialog: MatDialog,
     private afs: Firestore,
-    private afAuth: Auth, // private firebaseFunctionsService: FirebaseFunctionsService,
+    private afAuth: Auth,
     private storage: Storage,
-    private firebaseFunctionsService: FirebaseFunctionsService,
+    // private firebaseFunctionsService: FirebaseFunctionsService,
   ) {
     // this.firebaseFunctionsService.analyzeImage();
   }
@@ -69,10 +68,8 @@ export class DashboardComponent {
         return;
       }
 
-      // TODO: Handle the image file.
-      // For now just log to console
-      console.log('Uploaded image:', imageFile);
-      // uploadBytes(this.storage.bucket)
+      // log frontend image uploaded
+      console.log('Frontend uploaded image:', imageFile);
       // and show on page to check that we have image data
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -80,12 +77,11 @@ export class DashboardComponent {
       };
       reader.readAsDataURL(imageFile);
 
-
-      this.getApproval();
+      this.getApproval(imageFile);
     }
   }
 
-  private getApproval() {
+  private getApproval(file: File) {
     const categoryDescription: ApprovalInputData = {
       categoryDescription: 'Car',
     };
@@ -100,14 +96,19 @@ export class DashboardComponent {
         map(
           (approvalOutput) =>
             ({
-              img: '',
+              img: file.name,
               category: categoryDescription.categoryDescription,
               approval: approvalOutput.approval,
               email: this.afAuth.currentUser?.email,
+              timestamp: new Date()
             }) as Category,
         ),
         switchMap((cat) => {
+          // save the image to storage
+          uploadBytes(ref(this.storage, 'Images_Uploaded/' + file.name), file)
+          // save the meta information to firestore
           return from(addDoc(collection(this.afs, 'categories'), cat));
+
         }),
       )
       .subscribe();
