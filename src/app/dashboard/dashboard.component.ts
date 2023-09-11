@@ -8,7 +8,7 @@ import { Firestore } from '@angular/fire/firestore';
 import { collection, addDoc } from '@firebase/firestore';
 import { Auth } from '@angular/fire/auth';
 import { ref, Storage, uploadBytes } from '@angular/fire/storage';
-// import { FirebaseFunctionsService } from '../service/firebase-functions.service';
+import { FirebaseFunctionsService } from '../service/firebase-functions.service';
 
 export interface ApprovalInputData {
   categoryDescription: string;
@@ -31,7 +31,7 @@ export class DashboardComponent {
     private afs: Firestore,
     private afAuth: Auth,
     private storage: Storage,
-    // private firebaseFunctionsService: FirebaseFunctionsService,
+    private firebaseFunctionsService: FirebaseFunctionsService,
   ) {
     this.firebaseFunctionsService
       .analyzeImage()
@@ -103,15 +103,14 @@ export class DashboardComponent {
               category: categoryDescription.categoryDescription,
               approval: approvalOutput.approval,
               email: this.afAuth.currentUser?.email,
-              timestamp: new Date()
+              timestamp: new Date(),
             }) as Category,
         ),
         switchMap((cat) => {
           // save the image to storage
-          uploadBytes(ref(this.storage, 'Images_Uploaded/' + file.name), file)
+          uploadBytes(ref(this.storage, 'Images_Uploaded/' + file.name), file);
           // save the meta information to firestore
           return from(addDoc(collection(this.afs, 'categories'), cat));
-
         }),
       )
       .subscribe();
