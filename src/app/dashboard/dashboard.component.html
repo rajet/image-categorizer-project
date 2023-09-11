@@ -1,10 +1,32 @@
-<div class="centered-content-wrapper">
-  <div>
-    <h1>Welcome to image-categorizer!</h1>
-  </div>
-  <div>
-    <button mat-raised-button color="primary" (click)="getApproval()">
-      Speichere Beispielkategorie
-    </button>
-  </div>
+<div class="content">
+  <!-- title -->
+  <h1>Welcome to the Image Categorizer</h1>
+
+  <!-- image upload area -->
+  <label
+    for="fileInput"
+    class="image-upload-container"
+    (dragover)="onDragOver($event)"
+    (drop)="onDrop($event)"
+  >
+    <span class="upload-label">
+      Drag and drop an image here or click to upload
+    </span>
+    <input
+      id="fileInput"
+      type="file"
+      (change)="onFileSelected($event)"
+      accept="image/*"
+      style="display: none"
+    />
+  </label>
+
+  <!-- Show last uploaded image here if available -->
+  <img
+    class="latest-image"
+    *ngIf="uploadedImageData"
+    [src]="uploadedImageData"
+    alt="Latest uploaded image"
+  />
+
 </div>
