@@ -4,6 +4,7 @@ import { ApprovalDialogComponent } from './approval-dialog/approval-dialog.compo
 import { map } from 'rxjs';
 import { Category } from '../types/category.types';
 import { addDoc, collection, Firestore } from '@angular/fire/firestore';
+import { Auth } from '@angular/fire/auth';
 
 export interface ApprovalInputData {
   categoryDescription: string;
@@ -21,12 +22,12 @@ export class DashboardComponent {
   constructor(
     private matDialog: MatDialog,
     private afs: Firestore,
+    private afAuth: Auth,
   ) {}
   getApproval() {
     const categoryDescription: ApprovalInputData = {
       categoryDescription: 'Car',
     };
-    console.log('firestore: ', this.afs);
 
     this.matDialog
       .open(ApprovalDialogComponent, {
@@ -41,6 +42,7 @@ export class DashboardComponent {
               img: '',
               category: categoryDescription.categoryDescription,
               approval: approvalOutput.approval,
+              email: this.afAuth.currentUser?.email,
             }) as Category,
         ),
       )
