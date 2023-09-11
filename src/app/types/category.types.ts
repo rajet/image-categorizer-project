@@ -3,4 +3,5 @@ export interface Category {
   category: string;
   approval: boolean;
   email: string;
+  timestamp: Date;
 }
