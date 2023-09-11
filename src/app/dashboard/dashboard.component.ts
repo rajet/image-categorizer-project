@@ -2,11 +2,14 @@ import { Component } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { ApprovalDialogComponent } from './approval-dialog/approval-dialog.component';
-import { map } from 'rxjs';
+import { from, map, switchMap } from 'rxjs';
 import { Category } from '../types/category.types';
-import { addDoc, collection, Firestore } from '@angular/fire/firestore';
+import { Firestore } from '@angular/fire/firestore';
+import { collection, addDoc } from '@firebase/firestore';
+
 import { Auth } from '@angular/fire/auth';
 import { ref, Storage, uploadBytes } from '@angular/fire/storage';
+import { FirebaseFunctionsService } from '../service/firebase-functions.service';
 
 export interface ApprovalInputData {
   categoryDescription: string;
@@ -27,9 +30,12 @@ export class DashboardComponent {
     private matSnackBar: MatSnackBar,
     private matDialog: MatDialog,
     private afs: Firestore,
-    private afAuth: Auth,
-    private storage: Storage
-  ) {}
+    private afAuth: Auth, // private firebaseFunctionsService: FirebaseFunctionsService,
+    private storage: Storage,
+    private firebaseFunctionsService: FirebaseFunctionsService,
+  ) {
+    // this.firebaseFunctionsService.analyzeImage();
+  }
 
   onDragOver(event: Event): void {
     event.preventDefault();
@@ -45,13 +51,13 @@ export class DashboardComponent {
     }
   }
 
-  onFileSelected(event: Event): void {
+  async onFileSelected(event: Event): Promise<void> {
     const inputElement = event.target as HTMLInputElement;
     const files = inputElement.files;
-    this.handleImageUpload(files);
+    await this.handleImageUpload(files);
   }
 
-  private handleImageUpload(files: FileList | null): void {
+  private async handleImageUpload(files: FileList | null): Promise<void> {
     if (files && files.length > 0) {
       // We don't allow multi-image upload so only take 1 no matter the situation
       const imageFile = files[0];
@@ -66,6 +72,7 @@ export class DashboardComponent {
       // TODO: Handle the image file.
       // For now just log to console
       console.log('Uploaded image:', imageFile);
+      // uploadBytes(this.storage.bucket)
       // and show on page to check that we have image data
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -77,6 +84,7 @@ export class DashboardComponent {
       this.getApproval();
     }
   }
+
   private getApproval() {
     const categoryDescription: ApprovalInputData = {
       categoryDescription: 'Car',
@@ -98,9 +106,10 @@ export class DashboardComponent {
               email: this.afAuth.currentUser?.email,
             }) as Category,
         ),
+        switchMap((cat) => {
+          return from(addDoc(collection(this.afs, 'categories'), cat));
+        }),
       )
-      .subscribe(
-        async (cat) => await addDoc(collection(this.afs, 'categories'), cat),
-      );
+      .subscribe();
   }
 }
