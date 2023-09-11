@@ -6,6 +6,7 @@ import { map } from 'rxjs';
 import { Category } from '../types/category.types';
 import { addDoc, collection, Firestore } from '@angular/fire/firestore';
 import { Auth } from '@angular/fire/auth';
+import { ref, Storage, uploadBytes } from '@angular/fire/storage';
 
 export interface ApprovalInputData {
   categoryDescription: string;
@@ -27,6 +28,7 @@ export class DashboardComponent {
     private matDialog: MatDialog,
     private afs: Firestore,
     private afAuth: Auth,
+    private storage: Storage
   ) {}
 
   onDragOver(event: Event): void {
@@ -70,6 +72,8 @@ export class DashboardComponent {
         this.uploadedImageData = e.target?.result;
       };
       reader.readAsDataURL(imageFile);
+
+
       this.getApproval();
     }
   }
