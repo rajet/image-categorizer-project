@@ -6,7 +6,6 @@ import {
   httpsCallable,
 } from '@angular/fire/functions';
 import { Functions as FirebaseFunctions } from '@firebase/functions';
-import * as buffer from 'buffer';
 
 export enum FirebaseFunctionNames {
   analyzeImage = 'analyzeImageCloudFunction',
