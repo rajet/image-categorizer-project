@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Auth, signInWithEmailAndPassword } from '@angular/fire/auth';
+import { Auth, signInWithEmailAndPassword, signOut } from '@angular/fire/auth';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { LoginUser } from '../types/user.types';
 
@@ -34,5 +34,10 @@ export class AuthService {
       console.error(`Login failed: ${e}`);
       await this.router.navigateByUrl('/login');
     }
+  }
+
+  async logout() {
+    await signOut(this.afAuth);
+    await this.router.navigateByUrl('/login');
   }
 }

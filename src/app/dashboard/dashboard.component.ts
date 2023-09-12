@@ -10,6 +10,7 @@ import { Auth } from '@angular/fire/auth';
 import { ref, Storage, uploadBytes } from '@angular/fire/storage';
 import { FirebaseFunctionsService } from '../service/firebase-functions.service';
 import { Annotation, annotationMap } from '../types/annotation.types';
+import { AuthService } from '../service/auth.service';
 
 export interface ApprovalInputData {
   categoryDescription: string;
@@ -34,6 +35,7 @@ export class DashboardComponent {
     private afAuth: Auth,
     private storage: Storage,
     private firebaseFunctionsService: FirebaseFunctionsService,
+    private authService: AuthService,
   ) {}
 
   onDragOver(event: Event): void {
@@ -54,6 +56,10 @@ export class DashboardComponent {
     const inputElement = event.target as HTMLInputElement;
     const files = inputElement.files;
     await this.handleImageUpload(files);
+  }
+
+  async logout() {
+    await this.authService.logout();
   }
 
   private async handleImageUpload(files: FileList | null): Promise<void> {
