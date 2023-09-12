@@ -24,7 +24,9 @@ export class FirebaseFunctionsService {
   private get functionInstance(): FirebaseFunctions {
     return this.functionInstances[0];
   }
-  analyzeImage(data: any): Observable<string | undefined> {
+  analyzeImage(
+    data: string | ArrayBuffer | null | undefined,
+  ): Observable<string | undefined> {
     if (data) {
       return this.callFunctionWithName(
         FirebaseFunctionNames.analyzeImage,

@@ -20,6 +20,7 @@ export class ApprovalDialogComponent {
   approve(approval: boolean) {
     const approvalContent: ApprovalOutputData = {
       approval,
+      categoryDescription: this.approvalInputData.categoryDescription,
     };
     this.matDialogRef.close(approvalContent);
   }

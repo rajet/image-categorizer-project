@@ -2,18 +2,19 @@ import { Component } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { ApprovalDialogComponent } from './approval-dialog/approval-dialog.component';
-import { from, map, switchMap } from 'rxjs';
+import { from, map, Observable, switchMap } from 'rxjs';
 import { Category } from '../types/category.types';
 import { Firestore } from '@angular/fire/firestore';
 import { collection, addDoc } from '@firebase/firestore';
 import { Auth } from '@angular/fire/auth';
 import { ref, Storage, uploadBytes } from '@angular/fire/storage';
 import { FirebaseFunctionsService } from '../service/firebase-functions.service';
+import { Annotation, annotationMap } from '../types/annotation.types';
 
 export interface ApprovalInputData {
   categoryDescription: string;
 }
-export interface ApprovalOutputData {
+export interface ApprovalOutputData extends ApprovalInputData {
   approval: boolean;
 }
 
@@ -24,6 +25,7 @@ export interface ApprovalOutputData {
 })
 export class DashboardComponent {
   uploadedImageData: string | ArrayBuffer | null | undefined = null;
+  isLoading = false;
 
   constructor(
     private matSnackBar: MatSnackBar,
@@ -39,12 +41,12 @@ export class DashboardComponent {
     event.stopPropagation();
   }
 
-  onDrop(event: DragEvent): void {
+  async onDrop(event: DragEvent): Promise<void> {
     event.preventDefault();
     event.stopPropagation();
     if (event.dataTransfer) {
       const files = event.dataTransfer.files;
-      this.handleImageUpload(files);
+      await this.handleImageUpload(files);
     }
   }
 
@@ -68,50 +70,76 @@ export class DashboardComponent {
       const reader = new FileReader();
       reader.onload = (e) => {
         this.uploadedImageData = e.target?.result;
-        this.firebaseFunctionsService
-          .analyzeImage(e.target?.result)
-          .subscribe((result) => console.log('result: ', result));
       };
       reader.readAsDataURL(imageFile);
-      console.log('image: §', imageFile);
+      this.getApproval(imageFile);
     }
   }
+  private getApproval(imagefile: File) {
+    const analyzeImageObservable$ = new Observable((observer) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.firebaseFunctionsService.analyzeImage(e.target?.result).subscribe({
+          next: (res) => observer.next(res),
+          error: (err) => observer.error(err),
+        });
+      };
+      reader.readAsDataURL(imagefile);
+      this.isLoading = true;
+    });
 
-  arrayBufferToString(buffer: ArrayBuffer): string {
-    const decoder = new TextDecoder('utf-8');
-    return decoder.decode(buffer);
-  }
-
-  private getApproval(file: File) {
-    const categoryDescription: ApprovalInputData = {
-      categoryDescription: 'Car',
-    };
-
-    this.matDialog
-      .open(ApprovalDialogComponent, {
-        data: categoryDescription,
-      })
-      .afterClosed()
+    analyzeImageObservable$
       .pipe(
-        // switchMap(() => fireabasefunction)
+        switchMap((analysisResult) => {
+          const categoryDescription: ApprovalInputData = {
+            categoryDescription:
+              this.findAnnotationInAnnotationMap(analysisResult),
+          };
+          return this.matDialog
+            .open(ApprovalDialogComponent, {
+              data: categoryDescription,
+            })
+            .afterClosed();
+        }),
         map((result) => result as ApprovalOutputData),
         map(
           (approvalOutput) =>
             ({
-              img: file.name,
-              category: categoryDescription.categoryDescription,
+              img: imagefile.name,
+              category: approvalOutput.categoryDescription,
               approval: approvalOutput.approval,
               email: this.afAuth.currentUser?.email,
               timestamp: new Date(),
             }) as Category,
         ),
-        switchMap((cat) => {
+        switchMap(async (cat) => {
           // save the image to storage
-          uploadBytes(ref(this.storage, 'Images_Uploaded/' + file.name), file);
-          // save the meta information to firestore
+          await uploadBytes(
+            ref(this.storage, 'Images_Uploaded/' + imagefile.name),
+            imagefile,
+          );
+
+          this.isLoading = false;
           return from(addDoc(collection(this.afs, 'categories'), cat));
         }),
       )
       .subscribe();
+  }
+
+  private findAnnotationInAnnotationMap(
+    analysisResult: Annotation[] | unknown,
+  ) {
+    let foundKey = 'Undefiniert';
+    if (!(analysisResult instanceof Array)) {
+      return foundKey;
+    }
+    (analysisResult as Annotation[]).forEach((annotation) => {
+      for (const [key, values] of annotationMap.entries()) {
+        if (values.includes(annotation.description)) {
+          foundKey = key;
+        }
+      }
+    });
+    return foundKey;
   }
 }

@@ -3,24 +3,29 @@
   <h1>Welcome to the Image Categorizer</h1>
 
   <!-- image upload area -->
-  <label
-    for="fileInput"
-    class="image-upload-container"
-    (dragover)="onDragOver($event)"
-    (drop)="onDrop($event)"
-  >
-    <span class="upload-label">
-      Drag and drop an image here or click to upload
-    </span>
-    <input
-      id="fileInput"
-      type="file"
-      (change)="onFileSelected($event)"
-      accept="image/*"
-      style="display: none"
-    />
-  </label>
+  <ng-container *ngIf="!isLoading; else loading">
+    <label
+      for="fileInput"
+      class="image-upload-container"
+      (dragover)="onDragOver($event)"
+      (drop)="onDrop($event)"
+    >
+      <span class="upload-label">
+        Drag and drop an image here or click to upload
+      </span>
+      <input
+        id="fileInput"
+        type="file"
+        (change)="onFileSelected($event)"
+        accept="image/*"
+        style="display: none"
+      />
+    </label>
+  </ng-container>
 
+  <ng-template #loading>
+    <mat-spinner></mat-spinner>
+  </ng-template>
   <!-- Show last uploaded image here if available -->
   <img
     class="latest-image"
