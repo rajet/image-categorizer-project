@@ -35,9 +35,9 @@ async function calcAllCategoriesData() {
     snapshot.forEach((doc) => {
       const categoryData = doc.data() as Category;
       totalGuesses++;
-      if (categoryData.approval === true) {
+      if (categoryData.approval) {
         totalApprovalsTrue++;
-      } else if (categoryData.approval === false) {
+      } else if (!categoryData.approval) {
         totalApprovalsFalse++;
       }
     });
@@ -89,7 +89,7 @@ async function calcUserSpecificCategoriesData(userEmail: string) {
 // Cloud Function to send daily summary emails
 export const sendMail = functions
   .region('europe-west6')
-  .pubsub//Currently every 24 hours
+  .pubsub //Currently every 24 hours
   .schedule('0 0 * * *')
   .onRun(async () => {
     try {

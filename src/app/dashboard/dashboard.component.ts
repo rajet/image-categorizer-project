@@ -32,11 +32,7 @@ export class DashboardComponent {
     private afAuth: Auth,
     private storage: Storage,
     private firebaseFunctionsService: FirebaseFunctionsService,
-  ) {
-    this.firebaseFunctionsService
-      .analyzeImage()
-      .subscribe((str) => console.log('stri: ', str));
-  }
+  ) {}
 
   onDragOver(event: Event): void {
     event.preventDefault();
@@ -69,18 +65,21 @@ export class DashboardComponent {
         });
         return;
       }
-
-      // log frontend image uploaded
-      console.log('Frontend uploaded image:', imageFile);
-      // and show on page to check that we have image data
       const reader = new FileReader();
       reader.onload = (e) => {
         this.uploadedImageData = e.target?.result;
+        this.firebaseFunctionsService
+          .analyzeImage(e.target?.result)
+          .subscribe((result) => console.log('result: ', result));
       };
       reader.readAsDataURL(imageFile);
-
-      this.getApproval(imageFile);
+      console.log('image: §', imageFile);
     }
+  }
+
+  arrayBufferToString(buffer: ArrayBuffer): string {
+    const decoder = new TextDecoder('utf-8');
+    return decoder.decode(buffer);
   }
 
   private getApproval(file: File) {
