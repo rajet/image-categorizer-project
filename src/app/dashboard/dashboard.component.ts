@@ -68,12 +68,11 @@ export class DashboardComponent {
       const reader = new FileReader();
       reader.onload = (e) => {
         this.uploadedImageData = e.target?.result;
-        this.firebaseFunctionsService
-          .analyzeImage(e.target?.result)
-          .subscribe((result) => console.log('result: ', result));
+        // this.firebaseFunctionsService
+        //   .analyzeImage(e.target?.result)
+        //   .subscribe((result) => console.log('object recognition result: ', result));
       };
       reader.readAsDataURL(imageFile);
-      console.log('image: §', imageFile);
     }
   }
 
