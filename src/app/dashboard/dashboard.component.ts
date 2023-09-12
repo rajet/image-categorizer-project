@@ -129,7 +129,7 @@ export class DashboardComponent {
   private findAnnotationInAnnotationMap(
     analysisResult: Annotation[] | unknown,
   ) {
-    let foundKey = 'Undefiniert';
+    let foundKey = 'Undefined';
     if (!(analysisResult instanceof Array)) {
       return foundKey;
     }

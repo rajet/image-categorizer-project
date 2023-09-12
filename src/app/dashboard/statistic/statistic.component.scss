@@ -1,0 +1,40 @@
+.table-wrapper {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+h2 {
+    margin: 0;
+}
+
+table {
+  border-collapse: collapse;
+  margin-right: 55px;
+  width: 100%;
+}
+
+th,
+td {
+  padding: 10px;
+  text-align: center;
+}
+
+th {
+  border: none;
+  background-color: transparent;
+}
+
+td {
+  border: 1px solid #ddd;
+}
+
+td.correct {
+  color: #5cb85c;
+}
+
+td.incorrect {
+  color: #d9534f;
+}

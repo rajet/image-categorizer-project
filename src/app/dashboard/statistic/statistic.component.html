@@ -1,1 +1,47 @@
-<p>statistic works!</p>
+<div class="table-wrapper">
+  <h2>Accuracy Statistics</h2>
+  <br />
+  <table>
+    <thead>
+      <tr>
+        <th></th>
+        <th class="correct">Correct</th>
+        <th class="incorrect">Incorrect</th>
+        <th>% Correct</th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngIf="dbStatistics$ | async as dbStatistics">
+        <tr>
+          <th>Total</th>
+          <td class="correct">{{ dbStatistics.totalCorrect }}</td>
+          <td class="incorrect">{{ dbStatistics.totalIncorrect }}</td>
+          <td>
+            {{
+              (
+                (dbStatistics.totalCorrect /
+                  (dbStatistics.totalCorrect + dbStatistics.totalIncorrect)) *
+                100
+              ).toFixed(2)
+            }}%
+          </td>
+        </tr>
+        <tr>
+          <th>User</th>
+          <td class="correct">{{ dbStatistics.totalUserCorrect }}</td>
+          <td class="incorrect">{{ dbStatistics.totalUserIncorrect }}</td>
+          <td>
+            {{
+              (
+                (dbStatistics.totalUserCorrect /
+                  (dbStatistics.totalUserCorrect +
+                    dbStatistics.totalUserIncorrect)) *
+                100
+              ).toFixed(2)
+            }}%
+          </td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </table>
+</div>
