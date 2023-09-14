@@ -32,13 +32,4 @@ export class LoginComponent {
     );
   }
 
-  async devLogin() {
-    await this.authService.loginWithEmailAndPassword(
-      {
-        email: 'cplab@hslu.ch',
-        password: 'Admin123',
-      },
-      'dashboard',
-    );
-  }
 }
